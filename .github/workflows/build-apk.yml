@@ -25,7 +25,9 @@ jobs:
                       if name.endswith("/"):
                           os.makedirs(name, exist_ok=True)
                       else:
-                          os.makedirs(os.path.dirname(name), exist_ok=True)
+                          parent = os.path.dirname(name)
+                          if parent:
+                              os.makedirs(parent, exist_ok=True)
                           with open(name, "wb") as f:
                               f.write(z.read(item.filename))
 
