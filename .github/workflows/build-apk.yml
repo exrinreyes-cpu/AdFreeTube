@@ -14,37 +14,36 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Giải nén mã nguồn
+      - name: Giai nen ma nguon
+        shell: python
         run: |
-          python3 -c "
           import zipfile, os
-          if os.path.exists('AdFreeTube.zip'):
-              with zipfile.ZipFile('AdFreeTube.zip', 'r') as z:
+          if os.path.exists("AdFreeTube.zip"):
+              with zipfile.ZipFile("AdFreeTube.zip", "r") as z:
                   for item in z.infolist():
-                      clean_path = item.filename.replace('\\\\', '/').replace('\\', '/')
-                      if clean_path.endswith('/'):
-                          os.makedirs(clean_path, exist_ok=True)
+                      name = item.filename.replace("\\", "/")
+                      if name.endswith("/"):
+                          os.makedirs(name, exist_ok=True)
                       else:
-                          os.makedirs(os.path.dirname(clean_path), exist_ok=True)
-                          with open(clean_path, 'wb') as f:
+                          os.makedirs(os.path.dirname(name), exist_ok=True)
+                          with open(name, "wb") as f:
                               f.write(z.read(item.filename))
-          "
 
-      - name: Thiết lập JDK 17
+      - name: Thiet lap JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Cài đặt Gradle 8.4
+      - name: Cai dat Gradle 8.4
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '8.4'
 
-      - name: Biên dịch file APK
-        run: gradle assembleDebug --stacktrace
+      - name: Bien dich file APK
+        run: gradle assembleDebug
 
-      - name: Xuất file APK tải về
+      - name: Xuat file APK
         uses: actions/upload-artifact@v4
         with:
           name: AdFreeTube-APK
